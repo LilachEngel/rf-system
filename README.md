@@ -36,6 +36,7 @@ Frontend (React + Vite):
 Docker & Docker Compose:
 
 docker --version
+
 docker compose version
 
 Python 3.10+:
@@ -49,31 +50,43 @@ npm -version
 
 שלב 2: הפעלת תשתיות ה-Docker
 פתיחת הטרמינל בתיקיית הפרויקט שבה נמצא קובץ docker-compose.yml והרצת:
+
 cd /mnt/c/rf-system/backend
+
 docker compose up -d
 
 שלב 3: התקנת והרצת הBackend - Python
+
 pip install -r requirements.txt
 
 שלב 4: פתיחת 3 חלונות טרמינל נפרדים בתיקיית ה-backend והרצת הבאים:
 
 הפעלת ה-API:
+
 cd /mnt/c/rf-system/backend
+
 python3 -m uvicorn api:app --reload
 לצפייה בALERTS כנס לכתובת http://localhost:8000/alerts.
 
 הפעלת ה-Consumer (עיבוד הנתונים):
+
 cd /mnt/c/rf-system/backend
+
 python3 consumer.py
 
 הפעלת ה-Producer (ייצור הנתונים ל-Redis):
+
 cd /mnt/c/rf-system/backend
+
 python3 producer.py
 
 שלב 5: הרצת ה-Frontend - React Dashboard
 פתיחת טרמינל חדש, מעבר לתיקיית ה-frontend, התקנת החבילות והפעלת הדשבורד:
+
 cd /mnt/c/rf-system/frontend
+
 npm install
+
 npm run dev
 
 כעת ניתן לגשת לדשבורד דרך הדפדפן בכתובת שתוצג בטרמינל (http://localhost:5173).
