@@ -29,8 +29,8 @@ Real-Time RF Data Pipeline & Monitoring System
 הצדקת בחירת מנגנון המקביליות (Concurrency Choice)
 
 
-עבור רכיב ה-Consumer, בחרנו לעבוד במודל של Single-Threaded Blocking Loop בשילוב תור מנוהל (Redis Blocking Pop - blpop):
-סיבה מרכזית: הצרכן מעבד את ההודעות מהתור בצורה טורית ומובנית (FIFO), כאשר כל הודעה עוברת סדרת פעולות עוקבות מול מסדי הנתונים (Redis → MongoDB → MinIO → PostgreSQL). 
+עבור רכיב ה-Consumer, בחרתי לעבוד במודל של Single-Threaded Blocking Loop בשילוב תור מנוהל (Redis Blocking Pop - blpop):
+סיבה מרכזית: הצרכן מעבד את ההודעות מהתור בצורה תורית ומובנית (FIFO), כאשר כל הודעה עוברת סדרת פעולות עוקבות מול מסדי הנתונים (Redis → MongoDB → MinIO → PostgreSQL). 
 תקשורת I/O Bound: עיקר הזמן של הצרכן אינו מבוסס על חישובים מתמטיים כבדים (CPU-bound) שדורשים Multiprocessing, אלא על המתנה לתשובות מהרשת וממסדי הנתונים (I/O operations). שימוש ב-blpop חוסך צריכת משאבים מיותרת ומבטיח סנכרון מלא ואמינות גבוהה מבלי לאבד הודעות בדרך.
 
 
