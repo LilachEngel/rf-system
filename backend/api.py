@@ -5,16 +5,11 @@ from minio import Minio
 import psycopg2
 from pymongo import MongoClient
 
-
-# --- הגדרת חיבורים למסדי הנתונים ---
-
 # PostgreSQL
 def get_pg_connection():
     return psycopg2.connect(
         dbname="rf_db", user="user", password="password", host="localhost", cursor_factory=RealDictCursor
     )
-
-
 # MongoDB
 mongo_client = MongoClient("mongodb://127.0.0.1:27017/")
 mongo_db = mongo_client["rf_alerts_db"]
@@ -37,7 +32,7 @@ app.add_middleware(
     allow_headers=["*"],
 )
 
-# --- יצירת טבלת samples אוטומטית בעליית השרת ---
+# יצירת טבלת samples אוטומטית בעליית השרת 
 try:
     with get_pg_connection() as conn:
         with conn.cursor() as cursor:
@@ -56,7 +51,7 @@ except Exception as e:
     print(f"Warning: Could not auto-create PostgreSQL table: {e}")
 
 
-# --- 1. GET /samples: שליפת 50 הדגימות האחרונות עם פילטור אופציונלי לפי תדר ---
+# GET /samples: שליפת 50 הדגימות האחרונות עם פילטור אופציונלי לפי תדר 
 @app.get("/samples")
 def get_samples(frequency: float = Query(None, description="סינון אופציונלי לפי תדר")):
     conn = get_pg_connection()
@@ -75,7 +70,7 @@ def get_samples(frequency: float = Query(None, description="סינון אופצ�
     return {"count": len(samples), "samples": samples}
 
 
-# --- 2. GET /samples/{id}/raw: שליפת המערך הגולמי מ-MinIO לפי מזהה ---
+# GET /samples/{id}/raw: שליפת המערך הגולמי מ-MinIO לפי מזהה
 @app.get("/samples/{id}/raw")
 def get_sample_raw(id: str):
     conn = get_pg_connection()
@@ -100,7 +95,7 @@ def get_sample_raw(id: str):
         raise HTTPException(status_code=500, detail=f"Failed to fetch from MinIO: {str(e)}")
 
 
-# --- 3. GET /alerts: שליפת כל התראות החריגה מ-MongoDB ---
+# GET /alerts: שליפת כל התראות החריגה מ-MongoDB
 @app.get("/alerts")
 def get_alerts():
     try:
