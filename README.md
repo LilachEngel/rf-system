@@ -11,13 +11,13 @@ Real-Time RF Data Pipeline & Monitoring System
 
 
 הארכיטקטורה מורכבת מהרכיבים הבאים:
-1. **Producer (`producer.py`)**: 
+1. **Producer (producer.py)**: 
 מייצר סימולטיבית חבילות נתוני RF רדיו-טכניים ודוחף אותם לתור ההודעות.
 2. **Message Broker (Redis)**: 
-משמש כתור הודעות מהיר (`rf_queue`) להעברת הנתונים בין היצרן לצרכן.
-3. **Consumer (`consumer.py`)**:
+משמש כתור הודעות מהיר (rf_queue) להעברת הנתונים בין היצרן לצרכן.
+3. **Consumer (consumer.py)**:
  שולף את הנתונים מהתור, מחשב ממוצע נע, מזהה חריגות עוצמה, שומר את הנתונים הגולמיים ב-MinIO, את המטא-דאטה ב-PostgreSQL, ואת ההתראות ב-MongoDB.
-4. **API Backend (`api.py`)**: 
+4. **API Backend (api.py)**: 
 שרת FastAPI המספק נקודות קצה (Endpoints) לשליפת הדגימות וההתראות עבור ממשק המשתמש.
 5. **Frontend (React + Vite)**: 
 ממשק משתמש גרפי (דשבורד) המציג את נתוני המערכת וההתראות בזמן אמת.
@@ -28,9 +28,9 @@ Real-Time RF Data Pipeline & Monitoring System
 הצדקת בחירת מנגנון המקביליות (Concurrency Choice)
 
 
-עבור רכיב ה-Consumer, בחרנו לעבוד במודל של Single-Threaded Blocking Loop בשילוב תור מנוהל (Redis Blocking Pop - `blpop'):
+עבור רכיב ה-Consumer, בחרנו לעבוד במודל של Single-Threaded Blocking Loop בשילוב תור מנוהל (Redis Blocking Pop - blpop):
 סיבה מרכזית: הצרכן מעבד את ההודעות מהתור בצורה טורית ומובנית (FIFO), כאשר כל הודעה עוברת סדרת פעולות עוקבות מול מסדי הנתונים (Redis → MongoDB → MinIO → PostgreSQL). 
-תקשורת I/O Bound: עיקר הזמן של הצרכן אינו מבוסס על חישובים מתמטיים כבדים (CPU-bound) שדורשים Multiprocessing, אלא על המתנה לתשובות מהרשת וממסדי הנתונים (I/O operations). שימוש ב-`blpop` חוסך צריכת משאבים מיותרת ומבטיח סנכרון מלא ואמינות גבוהה מבלי לאבד הודעות בדרך.
+תקשורת I/O Bound: עיקר הזמן של הצרכן אינו מבוסס על חישובים מתמטיים כבדים (CPU-bound) שדורשים Multiprocessing, אלא על המתנה לתשובות מהרשת וממסדי הנתונים (I/O operations). שימוש ב-blpop חוסך צריכת משאבים מיותרת ומבטיח סנכרון מלא ואמינות גבוהה מבלי לאבד הודעות בדרך.
 
 
 
@@ -52,7 +52,7 @@ python3 --version
 node -version
 npm -version
 שלב 2: הפעלת תשתיות ה-Docker
-פתיחת הטרמינל בתיקיית הפרויקט שבה נמצא קובץ `docker-compose.yml` והרצת:
+פתיחת הטרמינל בתיקיית הפרויקט שבה נמצא קובץ docker-compose.yml והרצת:
 docker compose up -d
 
 
