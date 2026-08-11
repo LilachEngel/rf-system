@@ -26,11 +26,11 @@ def process_data():
         key = msg['key']
         val = msg['value']
         
-        # 1. חישוב ממוצע נע (חלון של 5 דגימות אחרונות) 
+        # חישוב ממוצע נע (חלון של 5 דגימות אחרונות) 
         samples = val['samples']
         moving_avg = sum(samples[-5:]) / len(samples[-5:]) if samples else 0
         
-        # 2. זיהוי חריגות (מעל -40 dBm) ושמירה ב-MongoDB 
+        # זיהוי חריגות (מעל -40 dBm) ושמירה ב-MongoDB 
         if any(s > -40 for s in samples):
             alert = {
                 "packet_id": key,
@@ -43,7 +43,7 @@ def process_data():
             mongo_db.alerts.insert_one(alert)
             print(f"!!! Alert detected for packet {key}")
 
-        # 3. שמירת ה-samples כ-JSON ב-MinIO
+        # שמירת ה-samples כ-JSON ב-MinIO
         file_content = json.dumps(samples).encode('utf-8')
         file_name = f"{key}.json"
         
@@ -54,10 +54,10 @@ def process_data():
             len(file_content)
         )
 
-        # 4. שמירת Metadata ב-PostgreSQL (מותאם לטבלת samples שה-API דורש)
+        # שמירת Metadata ב-PostgreSQL (מותאם לטבלת samples שה-API דורש)
         cur = pg_conn.cursor()
         
-        # נוודא שהטבלה קיימת עם המבנה הנכון
+        # טבלה קיימת עם המבנה הנכון
         cur.execute("""
             CREATE TABLE IF NOT EXISTS samples (
                 id VARCHAR(50) PRIMARY KEY,
@@ -67,7 +67,7 @@ def process_data():
             )
         """)
         
-        # שליפת התדר (נשתמש ב-start_frequency_mhz כברירת מחדל לשדה frequency)
+        # שליפת התדר (start_frequency_mhz כברירת מחדל לשדה frequency)
         frequency = val.get('start_frequency_mhz', 0.0)
         
         # הכנסת הנתונים לטבלה (עם התמודדות אם ה-ID כבר קיים)
@@ -79,7 +79,7 @@ def process_data():
         pg_conn.commit()
         cur.close()
 
-        # 5. עדכון הסטטוס הבוליאני
+        # עדכון הסטטוס הבוליאני
         val['is_finished'] = True
         print(f"Processed packet {key}. Status: {val['is_finished']}")
 
