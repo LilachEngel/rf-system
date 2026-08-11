@@ -9,9 +9,7 @@ redis_client = redis.Redis(host='localhost', port=6379, decode_responses=True)
 
 QUEUE_NAME = "rf_queue"
 
-def generate_rf_packet():
-    """ מייצר חבילת נתוני RF מדויקת לפי דרישות המבחן """
-    
+def generate_rf_packet():    
     # מזהה ייחודי לחבילה (Key)
     packet_key = str(uuid.uuid4())
     
@@ -21,10 +19,9 @@ def generate_rf_packet():
     end_freq = round(start_freq + random.uniform(10.0, 50.0), 2)  # תדר סוף ב-MHz
     
     # חישוב כמות הנקודות: (תדר סוף פחות תדר התחלה חלקי ה-RBW)
-    # נשתמש ב-int ונוודא לפחות נקודה אחת
     num_points = max(1, int((end_freq - start_freq) / rbw))
     
-    # מערך דגימות באורך משתנה (num_points), הערכים בין -120 ל--20
+    # מערך דגימות באורך משתנה 
     samples = [round(random.uniform(-120.0, -20.0), 2) for _ in range(num_points)]
     
     # ערך בוליאני המעיד על סיום עיבוד של הדגימה
