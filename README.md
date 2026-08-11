@@ -66,6 +66,7 @@ pip install -r requirements.txt
 cd /mnt/c/rf-system/backend
 
 python3 -m uvicorn api:app --reload
+
 לצפייה בALERTS כנס לכתובת http://localhost:8000/alerts.
 
 הפעלת ה-Consumer (עיבוד הנתונים):
