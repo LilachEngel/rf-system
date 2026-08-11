@@ -34,13 +34,16 @@ Frontend (React + Vite):
 לוודא כי הבאים מותקנים באמצעות הפעלת הפקודות הבאות בטרמינל -
 
 Docker & Docker Compose:
+
 docker --version
 docker compose version
 
 Python 3.10+:
+
 python3 --version
 
 Node.js & npm:
+
 node -version
 npm -version
 
